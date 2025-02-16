@@ -94,6 +94,26 @@ journalctl logs -f
 
 ## Turn Mind2 LEDs off
 
-The Mind2 LEDs are quite useful to understand in which state the Software is and what is doing, but in case the user wants to turn them off the command below can be run.
+The Mind2 LEDs are quite useful to understand in which state the Software is and what is doing.
+You can however turn them off via the following command
 
 `echo 0 > /sys/class/leds/Led/brightness`
+
+A better way is perhaps to use `mce-tools`.
+First install it as roo via
+
+``` shell
+devel-su pkcon install mce-tools
+```
+
+Then you can, either as root or simple user :
+
+Turn Off
+``` shell
+mcetool -L
+```
+
+Turn On
+``` shell
+mcetool -l
+```
