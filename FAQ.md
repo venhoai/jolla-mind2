@@ -100,7 +100,8 @@ You can however turn them off via the following command
 `echo 0 > /sys/class/leds/Led/brightness`
 
 A better way is perhaps to use `mce-tools`.
-First install it as roo via
+
+First install it as root via
 
 ``` shell
 devel-su pkcon install mce-tools
