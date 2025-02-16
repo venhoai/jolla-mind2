@@ -46,8 +46,6 @@ systemctl start venho-ada.service
 systemctl restart venho-ada.service
 ```
 
-
-
 ## Manually update the venho ada software version running or change version
 
 The version of the software installed is stored within the RELEASE_TAG variable in /var/lib/venho-ada/local.env file.  
@@ -72,6 +70,27 @@ In the case that the system doesn't seem to update images correctly, might be wo
 `nerdctl system prune -af`
 and then 
 `compose create --force-recreate` 
+
+## Re-Install Venho Platform from scratch
+
+The below instructions completely wipe all your data (in Venho) as well as re-install the entire Venho platform to factory image state.
+
+```
+devel-su
+systemctl stop venho-ada.service
+venho-ada-env
+nerdctl compose down
+nerdctl system prune -af
+rm -rf /home/venho-data
+rm /var/lib/venho-ada/preload-done
+reboot
+```
+
+Once device has restarted and you have regained SSH access, you may monitor install status with:
+
+```
+journalctl logs -f
+```
 
 ## Turn Mind2 LEDs off
 
