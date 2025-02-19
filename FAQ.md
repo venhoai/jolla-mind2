@@ -30,7 +30,6 @@ At the time of writing this FAQs the known containers for Venho applications are
 - ipfs
 - redis
 - qdrant
-- storage
 
 In order to see the logs nerdctl can be used running the following command:
 
