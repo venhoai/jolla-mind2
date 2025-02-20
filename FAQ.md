@@ -26,10 +26,19 @@ At the time of writing this FAQs the known containers for Venho applications are
 - storage
 - processor
 - venho-ada-frontend-httpd-1
+- ollama
+- ipfs
+- redis
+- qdrant
 
 In order to see the logs nerdctl can be used running the following command:
 
 ```
+# Switch to root
+devel-su
+# Switch to venho-ada-env enviorment
+venho-ada-env
+
 # See logs for all containers:
 nerdctl compose logs -f
 # See logs for a specific container (e.g., processor):
