@@ -127,3 +127,36 @@ Turn On
 ``` shell
 mcetool -l
 ```
+## How to Fix the KEYGEN_FAIL error when trying to login
+The Services were not properlly started. So you will have to start them manually again.
+
+Switch to root
+``` shell
+devel-su
+```
+
+Enter the venho-ada-env enviorment
+``` shell
+venho-ada-env
+```
+
+Stop the venho-ada service and the containers
+``` shell
+systemctl stop venho-ada.service
+nerdctl compose down
+```
+
+Start the venho-ada service again
+``` shell
+systemctl start venho-ada.service
+```
+
+You will have to wait untill all containers are running again. You can check if all are running again via:
+```shell
+nerdctl compose ps -a
+```
+
+After you are done you can exit the venho-ada-env enviorment again
+``` shell
+exit
+```
