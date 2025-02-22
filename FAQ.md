@@ -80,7 +80,7 @@ In the case that the system doesn't seem to update images correctly, might be wo
 and then 
 `compose create --force-recreate` 
 
-## Wipe only your userdata
+## Clean Userdata and Accounts
 
 If you have some issues, especially when updates break during the alpha release schedule. These commands remove your user and associated data from the system allowing you to recreate a fresh new user.
 Take care not to remove the `ollama` or `pytorch-transformers` directories, as these contain LLM models which are quite big and you probably don't want to reinstall them.
