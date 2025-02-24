@@ -177,3 +177,52 @@ After you are done you can exit the venho-ada-env enviorment again
 ``` shell
 exit
 ```
+## How to Fix Venho.ai Container Registry Auth Issue
+You run into an authentication issue pulling new container images from the `Venho.ai` (registry.jolla.com) registry. 
+An error message shown on the root shell looks e.g. like the following (pulling release tag 0.3.0):
+
+```shell
+(venho-ada)[root@Mind2 defaultuser]# nerdctl compose pull
+INFO[0000] Pulling image venho.ai/venho-ada/frontend-httpd:0.3.0
+venho.ai/venho-ada/frontend-httpd:0.3.0: resolving      |--------------------------------------|
+venho.ai/venho-ada/frontend-httpd:0.3.0: resolving      |--------------------------------------|
+elapsed: 25.3s                           total:   0.0 B (0.0 B/s)
+FATA[0025] failed to resolve reference "venho.ai/venho-ada/frontend-httpd:0.3.0": pull access denied, repository does not exist or may require authorization: authorization failed: no basic auth credentials
+FATA[0025] error while pulling image venho.ai/venho-ada/frontend-httpd:0.3.0: exit status 1
+```
+
+You can check your stored registry credentials using the `docker-credential-ssu` CLI that will query the SailfishOS keystore:
+
+```shell
+(venho-ada)[root@Mind2 venho-ada]# printf "registry.jolla.com" | docker-credential-ssu -d get
+[D] unknown:0 - Credentials reguested for "registry.jolla.com"
+[D] unknown:0 - Updating store credentials
+{
+    "error": "Credentials not found"
+}
+```
+
+An error message will tell you that the credentials are missing.
+
+To fix this issue, please:
+
+- connect your `Mind2` device with a keyboard, display and mouse
+- open the settings application and switch to accounts tab
+- delete your current account linked to `Mind2` SailfishOS
+- re-register your device using the same credentials as previously used for registration
+
+The re-registration of the device will re-create the registry authentication credentials in the keystore. You can verify this 
+by using the previous `docker-credentials-ssu` command to check your success:
+
+```shell
+(venho-ada)[root@Mind2 venho-ada]# printf "registry.jolla.com" | docker-credential-ssu -d get
+[D] unknown:0 - Credentials reguested for "registry.jolla.com"
+[D] unknown:0 - Updating store credentials
+{
+    "Secret": "xxxxxxxxxxxxxxxxx",
+    "ServerURL": "registry.jolla.com",
+    "Username": "johndoe"
+}
+```
+
+It should now be possible to pull the new `Venho.ai` images from the registry.
