@@ -206,12 +206,10 @@ An error message will tell you that the credentials are missing.
 
 To fix this issue, please:
 
-- connect your `Mind2` device with a keyboard, display and mouse
-- open the settings application and switch to accounts tab
-- delete your current account linked to `Mind2` SailfishOS
-- re-register your device using the same credentials as previously used for registration
+- connect your `Mind2` device with a display and mouse
+- open the Jolla store application
 
-The re-registration of the device will re-create the registry authentication credentials in the keystore. You can verify this 
+The Jolla store application will update the registry authentication credentials in the keystore. You can verify this 
 by using the previous `docker-credentials-ssu` command to check your success:
 
 ```shell
