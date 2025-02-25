@@ -1,5 +1,15 @@
 # Venho ADA Platform - RELEASE NOTES
 
+## 0.3.1
+- Fixed reply not closing right side panel.
+- Fixed extended character sets in filenames breaking processor.
+- Fixed HTML emails not being processed.
+- Fixed issue with mail being marked as read always.
+- Fixed issue with account filter toggles in messaging center.
+- Added option to wipe user account & data.
+- Added favicon.
+- Added proper fonts.
+
 ## 0.3.0
   - Added version number indication in bottom right :)
   - Better handling of uploads and live updates in documents and messaging center views.
