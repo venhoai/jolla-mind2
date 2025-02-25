@@ -33,7 +33,7 @@ At the time of writing this FAQs the known containers for Venho applications are
 
 In order to see the logs nerdctl can be used running the following command:
 
-```
+```shell
 # Switch to root
 devel-su
 # Switch to venho-ada-env enviorment
@@ -49,7 +49,7 @@ nerdctl compose logs -f processor
 
 Venho Ada service is run by default at system start-up, in order to start stop and restart the service `systemctl` can be used as follows
 
-```
+```shell
 systemctl stop venho-ada.service
 systemctl start venho-ada.service
 systemctl restart venho-ada.service
@@ -57,51 +57,75 @@ systemctl restart venho-ada.service
 
 ## Manually update the venho ada software version running or change version
 
-The version of the software installed is stored within the RELEASE_TAG variable in /var/lib/venho-ada/local.env file.  
+The version of the software installed is stored within the RELEASE_TAG variable in /var/lib/venho-ada/local.env file.
 The user can change this variable if required using the following procedure (before updating it is recommended to stop the service running and stop the containers) :
-```
+
+```shell
 # Stop Service and containers
+devel-su
+venho-ada-env
 systemctl stop venho-ada.service
 nerdctl compose down
 # exit the venho-ada-env environment
 exit
 # Update version tag
-echo "RELEASE_TAG=0.1.10" > /var/lib/venho-ada/local.env 
+echo "RELEASE_TAG=0.1.10" > /var/lib/venho-ada/local.env
 # Update containers and start
 venho-ada-env
-nerdctl compose pull 
-systemctl start venho-ada.service 
+nerdctl compose pull
+systemctl start venho-ada.service
 ```
-## Clean unused images 
+
+## Clean unused images
 
 In the case that the system doesn't seem to update images correctly, might be worth performing a pruning of the dangling unused images using the command below:
 
-`nerdctl system prune -af`
-and then 
-`compose create --force-recreate` 
+```shell
+nerdctl system prune -af
+```
+
+Followed by:
+
+```shell
+compose create --force-recreate
+```
 
 ## Clean Userdata and Accounts
 
 If you have some issues, especially when updates break during the alpha release schedule. These commands remove your user and associated data from the system allowing you to recreate a fresh new user.
 Take care not to remove the `ollama` or `pytorch-transformers` directories, as these contain LLM models which are quite big and you probably don't want to reinstall them.
 
+```shell
+devel-su
+systemctl stop venho-ada.service
+venho-ada-env
+nerdctl compose stop
+rm -rf /home/venho-ada/qdrant
+rm -rf /home/venho-ada/quadstore
+rm -rf /home/venho-ada/valkey
+nerdctl compose create --force-recreate
+reboot
 ```
-$ devel-su
-$ systemctl stop venho-ada.service
-$ venho-ada-env
-$ nerdctl compose stop
-$ rm -rf /home/venho-ada/qdrant
-$ rm -rf /home/venho-ada/quadstore
-$ rm -rf /home/venho-ada/valkey
-$ nerdctl compose create --force-recreate
-$ reboot
+
+## Adding models
+
+You can independently add models to be used through the Venho interface such as the conversation user experience. When adding models, keep in mind the hardware requirements of the models to ensure you are choosing ones which will best compliment your Mind2:
+
+```shell
+devel-su
+venho-ada-env
+nerdctl exec -it ollama ollama pull some-model # For example, gemma2:2b
+nerdctl compose restart llm-router
+exit
 ```
+
+Then wait a few minutes and refresh your webpage, the model should now be available in the model picker in the Conversation experience.
 
 ## Re-Install Venho Platform from scratch
 
 The below instructions completely wipe all your data (in Venho) as well as re-install the entire Venho platform to factory image state.
 
-```
+```shell
 devel-su
 systemctl stop venho-ada.service
 venho-ada-env
@@ -114,7 +138,7 @@ reboot
 
 Once device has restarted and you have regained SSH access, you may monitor install status with:
 
-```
+```shell
 journalctl logs -f
 ```
 
@@ -123,58 +147,70 @@ journalctl logs -f
 The Mind2 LEDs are quite useful to understand in which state the Software is and what is doing.
 You can however turn them off via the following command
 
-`echo 0 > /sys/class/leds/Led/brightness`
+```shell
+echo 0 > /sys/class/leds/Led/brightness
+```
 
 A better way is perhaps to use `mce-tools`.
 
 First install it as root via
 
-``` shell
+```shell
 devel-su pkcon install mce-tools
 ```
 
 Then you can, either as root or simple user :
 
 Turn Off
-``` shell
+
+```shell
 mcetool -L
 ```
 
 Turn On
-``` shell
+
+```shell
 mcetool -l
 ```
+
 ## How to Fix the KEYGEN_FAIL error when trying to login
+
 The Services were not properlly started. So you will have to start them manually again.
 
 Switch to root
-``` shell
+
+```shell
 devel-su
 ```
 
 Enter the venho-ada-env enviorment
-``` shell
+
+```shell
 venho-ada-env
 ```
 
 Stop the venho-ada service and the containers
-``` shell
+
+```shell
 systemctl stop venho-ada.service
 nerdctl compose down
 ```
 
 Start the venho-ada service again
-``` shell
+
+```shell
 systemctl start venho-ada.service
 ```
 
 You will have to wait untill all containers are running again. You can check if all are running again via:
+
 ```shell
 nerdctl compose ps -a
 ```
 
 After you are done you can exit the venho-ada-env enviorment again
-``` shell
+
+```shell
 exit
 ```
 ## How to Fix Venho.ai Container Registry Auth Issue
