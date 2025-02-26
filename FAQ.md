@@ -100,9 +100,9 @@ devel-su
 systemctl stop venho-ada.service
 venho-ada-env
 nerdctl compose stop
-rm -rf /home/venho-ada/qdrant
-rm -rf /home/venho-ada/quadstore
-rm -rf /home/venho-ada/valkey
+rm -rf /home/venho-data/qdrant
+rm -rf /home/venho-data/quadstore
+rm -rf /home/venho-data/valkey
 nerdctl compose create --force-recreate
 reboot
 ```
