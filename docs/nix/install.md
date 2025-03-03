@@ -78,7 +78,7 @@ devel-su
 start a minimal container with `/nix` mounted, install the required dependencies `curl` and `xz`, and run the installer for a single user "rootless" Nix installation:
 
 ```console
-nerdctl run --rm -ti -v /nix:/nix debian:stable
+nerdctl run --rm -ti -v /nix:/nix debian:stable-slim
 apt-get update
 apt-get install curl xz-utils
 sh <(curl -L https://nixos.org/nix/install) --no-daemon
