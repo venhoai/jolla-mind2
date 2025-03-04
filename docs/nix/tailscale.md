@@ -69,14 +69,9 @@ To make sure that Tailscale starts automatically when you start your M2, you can
       WantedBy = [ "default.target" ] ;
     };
   };
-
-  # Ensure home-manager activates the systemd service
-  home.activation.activateSystemd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    /usr/bin/systemctl --user daemon-reload
-    /usr/bin/systemctl --user enable tailscaled --now
-  '';
+  systemd.user.startServices = true;
 ```
 
-When ready, run `home-manager switch` to apply the changes.
+When ready, run `home-manager switch` to apply the changes and `systemctl --user start tailscaled` to start the service for the first time. Later it will be automatically started e.g. after a system reboot.
 
 This will start the Tailscale daemon with user space networking and the custom socket path when you start your M2.
