@@ -8,6 +8,10 @@ jobs:
   create_jira_issue:
     runs-on: ubuntu-latest
     steps:
+      - name: Install jq
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Create Jira Issue
         env:
           JIRA_USER: ${{ secrets.JIRA_USER }}
@@ -15,20 +19,49 @@ jobs:
           JIRA_DOMAIN: zippie-labs.atlassian.net
           PROJECT_KEY: VEN
         run: |
-          curl -D- -u $JIRA_USER:$JIRA_API_TOKEN \
-          -X POST \
-          -H "Content-Type: application/json" \
-          --data '{
-            "fields": {
-              "project": { "key": "'"$PROJECT_KEY"'" },
-              "summary": "'"${{ github.event.issue.title }}"'",
-              "description": "'"${{ github.event.issue.body }}"'",
-              "issuetype": { "name": "Bug" },
-              "labels": [
-                "github"
-              ],
-              "parent": {
-                "key": "VEN-175"
+          # Verify jq is installed
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "jq is not installed. Please install it."
+            exit 1
+          fi
+
+          # Generate JSON payload using jq with Atlassian Document Format for description
+          PAYLOAD=$(jq -n \
+            --arg project_key "$PROJECT_KEY" \
+            --arg summary "${{ github.event.issue.title }}" \
+            --arg description "${{ github.event.issue.body }}" \
+            --arg parent_key "VEN-175" \
+            '{
+              fields: {
+                project: { key: $project_key },
+                summary: $summary,
+                description: {
+                  version: 1,
+                  type: "doc",
+                  content: [
+                    {
+                      type: "paragraph",
+                      content: [
+                        {
+                          type: "text",
+                          text: $description
+                        }
+                      ]
+                    }
+                  ]
+                },
+                issuetype: { name: "Bug" },
+                labels: ["github"],
+                parent: { key: $parent_key }
               }
-            }
-          }' https://$JIRA_DOMAIN/rest/api/3/issue
+            }')
+          
+          echo "Generated Payload:"
+          echo "$PAYLOAD"
+
+          # Send the payload to Jira using curl
+          curl -D- -u "$JIRA_USER:$JIRA_API_TOKEN" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data "$PAYLOAD" \
+            "https://$JIRA_DOMAIN/rest/api/3/issue"
