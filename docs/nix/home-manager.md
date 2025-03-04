@@ -79,6 +79,7 @@ Nix has a few [configuration options](https://nix.dev/manual/nix/2.24/command-re
 You should at least configure automatic garbage collection with `min-free` and `max-free` options. For example:
 
 ```nix
+  nix.package = pkgs.nix;
   nix.extraOptions = ''
     min-free = 1G
     max-free = 10G
@@ -88,6 +89,7 @@ You should at least configure automatic garbage collection with `min-free` and `
 Possibly, later you might want to enable experimental features like `nix-command` and `flakes` for [the next-generation Nix command-line interface](https://nix.dev/manual/nix/2.24/command-ref/experimental-commands):
 
 ```nix
+  nix.package = pkgs.nix;
   nix.extraOptions = ''
     min-free = 1G
     max-free = 10G
