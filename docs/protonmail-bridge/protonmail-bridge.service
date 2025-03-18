@@ -1,0 +1,20 @@
+[Unit]
+Description=Protonmail Bridge
+Requires=containerd.service
+After=containerd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+
+WorkingDirectory=/var/lib/venho-user/protonmail-bridge/
+EnvironmentFile=/var/lib/venho-user/protonmail-bridge/*.env
+
+ExecStart=/usr/bin/nerdctl compose start
+ExecStop=/usr/bin/nerdctl compose stop
+
+# Bringing down the containers may take some
+TimeoutStopSec=60s
+
+[Install]
+WantedBy=multi-user.target
