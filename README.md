@@ -6,8 +6,8 @@ This repository contains useful resources for users' to use their Jolla Mind 2 d
 ## How to setup email accounts
 - [Gmail](Messaging_Center/SETUP_GMAIL.md)
 - [Yahoo](Messaging_Center/SETUP_YAHOO.md)
-- [ProtonMail](Messaging_Center/SETUP_PROTONMAIL.md)
 - [Zoho](Messaging_Center/SETUP_ZOHO.md)
+- [ProtonMail](Messaging_Center/SETUP_PROTONMAIL.md) - Not supported at the moment
 
 ## FAQ
 For useful commands helping troubleshoot and resolve known issues please checkout the [FAQ](./FAQ.md) section 
