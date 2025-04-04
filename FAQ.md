@@ -107,6 +107,48 @@ nerdctl compose create --force-recreate
 reboot
 ```
 
+## Resetting Your Mind2 Device Using Recovery Mode
+
+If your **Mind2** is not starting up normally or not starting at all, you can try to fix it using **Recovery Mode**.
+
+#### Step 1: Access Recovery Button
+
+To boot into Recovery Mode, you may need to **remove the bottom plate** of your Mind2 device to access the **Recovery** button.
+
+- While **connecting power**, **hold the Recovery button** until the **power button lights up**.
+- The Recovery button is the **right-hand side** button (if the power button is facing away from you).
+- It is labeled **"RECOVERY"**.
+
+![Recovery mode button location](./assets/images/recovery.png)
+
+#### Step 2: Connect via USB
+
+1. Connect a **USB data cable** from your Mind2 to your **laptop**.
+2. Your computer should detect the device as a **USB network interface**.
+3. Use a **telnet** client to connect to:
+
+```
+telnet 10.42.66.66
+```
+
+4. A menu should appear with different recovery options.
+
+![Recovery mode telnet menu](./assets/images/recoveryModeTelnet.png)
+
+#### Step 3: Perform Factory Reset
+
+- Select option **#1**: **“Reset device to factory state.”**
+- Wait for the process to complete and **follow any on-screen instructions**.
+- ⚠️ **Warning**: This will reset your device to factory settings and **erase all data** on the Mind2.
+
+> **Note**: If your terminal application crashes or disappears during this step, reconnect to Recovery Mode and retry the reset. You may need to **repeat this step several times**.
+
+#### Step 4: Exit Recovery Mode
+
+- Once the reset is complete and you’re back in the menu, select option **#6: "Exit"**.
+- Disconnect the USB cable.
+- The **Mind2 should now boot up normally**.
+
 ## Adding models
 
 You can independently add models to be used through the Venho interface such as the conversation user experience. When adding models, keep in mind the hardware requirements of the models to ensure you are choosing ones which will best compliment your Mind2:
