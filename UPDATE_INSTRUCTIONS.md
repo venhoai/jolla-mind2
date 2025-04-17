@@ -7,31 +7,31 @@
 1. Update Sailfish OS to 5.0.0.67 -- This **MUST** be done through the Sailfish UX currently.
 3. As root clear the old venho-data
    ```
-        devel-su
-        systemctl stop venho-ada
-        cd /home/venho-data
-        rm -r frontend-httpd ipfs ollama qdrant quadstore secrets valkey
+     devel-su
+     systemctl stop venho-ada
+     cd /home/venho-data
+     rm -r frontend-httpd ipfs ollama qdrant quadstore secrets valkey
    ```
 4. Download and extract the new data files in /home/venho-data
    ```
-        curl -O https://releases.jolla.com/venho/data/rknn-llm_0.2.0_data.tar
-        curl -O https://releases.jolla.com/venho/data/ollama_0.2.0_data.tar
-        tar xvf rknn-llm_0.2.0_data.tar
-        tar xvf ollama_0.2.0_data.tar
+     curl -O https://releases.jolla.com/venho/data/rknn-llm_0.2.0_data.tar
+     curl -O https://releases.jolla.com/venho/data/ollama_0.2.0_data.tar
+     tar xvf rknn-llm_0.2.0_data.tar
+     tar xvf ollama_0.2.0_data.tar
    ```
 5. Delete the local.env file if you have one
    ```
-   rm /var/lib/venho-ada/local.env
+      rm /var/lib/venho-ada/local.env
    ```
 6. Enter the venho-ada-env and update the containers
    ```
-        venho-ada-env
-        /usr/libexec/venho-ada/setup
-        nerdctl compose down
-        nerdctl compose pull
-        exit
+     venho-ada-env
+     /usr/libexec/venho-ada/setup
+     nerdctl compose down
+     nerdctl compose pull
+     exit
    ```
 7. Restart the venho-ada service
    ```
-        systemctl start venho-ada
+     systemctl start venho-ada
    ```
