@@ -2,7 +2,7 @@
 
 >[!CAUTION]
 >
->You will need to create a new Venho-AI DID Account after updating to this Version. All data from your old Account will be deleted.
+>You will need to create a new Venho AI Local ID Account after updating to this Version. All data from your old Account will be deleted.
 
 1. Update Sailfish OS to 5.0.0.67
 2. As root clear the old venho-data
