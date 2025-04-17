@@ -1,5 +1,26 @@
 # Venho ADA Platform - RELEASE NOTES
 
+## 0.4.2
+- Brand new enhanced intelligent search process in "Memory" chat mode.
+- New node based pipeline processor infrastructure. With advanced queue and task features.
+- New document and email processor pipelines to support enhanced search system & new job status signalling.
+- NPU acceleration with accelerated user chat, metadata extraction and summarization processor tasks!!!
+- Processor queue suspension on user chat requests.
+- New mailbox IMAP synchronisation system.
+- Improvements to sign-up / sign-in features.
+- Overhauled "Window Manager" code to make more consistent and less error prone agent views.
+- Lots of improvements to the chat user experience.
+- New mail account creation flows and many improvements to the Messaging Center in general.
+- Ability to view references when using Memory Chat.
+- Ability to view Memory Chat low-level prompt information.
+- Many stability fixes and usability enhancements.
+- Some code review and refactoring of core systems.
+- Persistent login across browser sessions.
+- Improvements to the authentication systems in general.
+- Fixed issues related to PDF whitespace not being extracted correctly in some PDFs.
+- Fixed issues with stylesheets not rendering correctly on OS X and Microsoft Windows.
+- And a bunch more.
+
 ## 0.3.1
 - Fixed reply not closing right side panel.
 - Fixed extended character sets in filenames breaking processor.
