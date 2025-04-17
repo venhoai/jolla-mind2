@@ -25,5 +25,5 @@
    ```
 8. Restart the venho-ada service
    ```
-        systemctl start venho-ada (edited)
+        systemctl start venho-ada
    ```
