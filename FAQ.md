@@ -69,7 +69,7 @@ nerdctl compose down
 # exit the venho-ada-env environment
 exit
 # Update version tag
-echo "RELEASE_TAG=0.1.10" > /var/lib/venho-ada/local.env
+echo "RELEASE_TAG=0.4.2" > /var/lib/venho-ada/local.env
 # Update containers and start
 venho-ada-env
 nerdctl compose pull
