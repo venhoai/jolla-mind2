@@ -6,7 +6,6 @@ on:
 
 jobs:
   create_jira_issue:
-    if: contains(github.event.issue.labels.*.name, 'bug')
     runs-on: ubuntu-latest
     steps:
       - name: Install jq
