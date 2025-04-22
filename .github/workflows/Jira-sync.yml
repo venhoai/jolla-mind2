@@ -20,16 +20,16 @@ jobs:
           PROJECT_KEY: VEN
           PARENT_KEY: VEN-175
         run: |
-          # grab title/body from the GitHub event
-          ISSUE_TITLE="${{ github.event.issue.title }}"
-          ISSUE_BODY="${{ github.event.issue.body }}"
-          
           # Verify jq is installed
           if ! command -v jq >/dev/null 2>&1; then
             echo "jq is not installed. Please install it."
             exit 1
           fi
-
+          
+          # grab title/body from the GitHub event
+          ISSUE_TITLE=$(jq -r .issue.title "$GITHUB_EVENT_PATH")
+          ISSUE_BODY=$(jq -r .issue.body  "$GITHUB_EVENT_PATH")
+        
           # Build the payload with a single-quoted, multi-line filter
           PAYLOAD=$(jq -n \
             --arg project_key "$PROJECT_KEY" \
