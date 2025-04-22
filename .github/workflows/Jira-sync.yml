@@ -6,6 +6,7 @@ on:
 
 jobs:
   create_jira_issue:
+    if: contains(github.event.issue.labels.*.name, 'bug')
     runs-on: ubuntu-latest
     steps:
       - name: Install jq
@@ -18,41 +19,43 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_DOMAIN: zippie-labs.atlassian.net
           PROJECT_KEY: VEN
+          PARENT_KEY: VEN-175
         run: |
+          # grab title/body from the GitHub event
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          
           # Verify jq is installed
           if ! command -v jq >/dev/null 2>&1; then
             echo "jq is not installed. Please install it."
             exit 1
           fi
 
-          # Generate JSON payload using jq with Atlassian Document Format for description
+          # Build the payload with a single-quoted, multi-line filter
           PAYLOAD=$(jq -n \
             --arg project_key "$PROJECT_KEY" \
-            --arg summary "${{ github.event.issue.title }}" \
-            --arg description "${{ github.event.issue.body }}" \
-            --arg parent_key "VEN-175" \
+            --arg summary     "$ISSUE_TITLE" \
+            --arg description "$ISSUE_BODY" \
+            --arg parent_key  "$PARENT_KEY" \
             '{
-              fields: {
-                project: { key: $project_key },
-                summary: $summary,
-                description: {
-                  version: 1,
-                  type: "doc",
-                  content: [
+              "fields": {
+                "project":     { "key": $project_key },
+                "summary":     $summary,
+                "description": {
+                  "version": 1,
+                  "type":    "doc",
+                  "content": [
                     {
-                      type: "paragraph",
-                      content: [
-                        {
-                          type: "text",
-                          text: $description
-                        }
+                      "type": "paragraph",
+                      "content": [
+                        { "type": "text", "text": $description }
                       ]
                     }
                   ]
                 },
-                issuetype: { name: "Bug" },
-                labels: ["github"],
-                parent: { key: $parent_key }
+                "issuetype": { "name": "Bug" },
+                "labels":    ["github"],
+                "parent":    { "key": $parent_key }
               }
             }')
           
