@@ -1,5 +1,19 @@
 # Venho ADA Platform - RELEASE NOTES
 
+## 0.4.5
+- Lots of fixes to Messaging Center and email handling.
+- Fixes to account wiping.
+- Fixed issues with migrating from previous versions.
+- Fixed issues with user notifications.
+- More stability fixes.
+- Fixes for processor pipelines.
+- Fixed issues with chat messages.
+- Making user take proper ownership of device. (show signup when no user binding in place)
+- PDF document format fixes, different character set handling, etc.
+- Email viewer
+- Added back plaintext document support.
+- And a bunch more bug fixes and improvements to UX.
+
 ## 0.4.2
 - Brand new enhanced intelligent search process in "Memory" chat mode.
 - New node based pipeline processor infrastructure. With advanced queue and task features.
