@@ -1,8 +1,20 @@
-# Upgrading to 0.4.5
-
 >[!CAUTION]
 > Your device must be connected to a display and show the Sailfish UX for updates to work.
 >
+
+# Upgrading to 0.4.6
+
+Starting with Sailfish OS 5.0.0.68 the Venho containers can be updated from the
+Sailfish Settings UI.
+
+First update Sailfish OS and then go to Settings > System > Venho ADA. From
+there youcan check and install the update.
+
+Note that the update progress indicator is still quite coarse, so it may seem
+like it's stuck on operations like downloading the images.
+
+
+# Upgrading to 0.4.5
 
 >[!IMPORTANT]
 > If you're upgrading from a release prior to 0.4.2, you will need to follow steps 1, 2 and 3. In the [Upgrading to 0.4.2](#upgrading-to-042) section
