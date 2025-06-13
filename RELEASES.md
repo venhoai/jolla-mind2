@@ -1,5 +1,19 @@
 # Venho ADA Platform - RELEASE NOTES
 
+## 0.4.6
+- Fixed IMAP username configuration in email setup.
+- Improved email account setup form behavior.
+- Fixed Cancel button in email setup dialog.
+- Enhanced message display with better sender/recipient information.
+- Improved reply interface with hidden attachments and action buttons when replying.
+- Better handling of messages with multiple recipients.
+- Updated help documentation links.
+- Smarter messaging center interface for managing email accounts.
+- Improved user experience for message threads.
+- Fixed email connection issues with various providers.
+- Streamlined interface for managing multiple email accounts.
+- Enhanced overall email and messaging functionality.
+
 ## 0.4.5
 - Lots of fixes to Messaging Center and email handling.
 - Fixes to account wiping.
