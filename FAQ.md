@@ -3,78 +3,60 @@
 ## Introduction
 
 This file is meant to collect useful information for Venho Ai / Jolla Mind2 users to help them troubleshoot and resolve known issues.
-All the commands below are expected to be run with admin privileges (`devel-su`) and `venho-ada-env` environment settings.
+
+>[!IMPORTANT]
+> All the commands below are expected to be run with root privileges (`devel-su`)
+>
+
+Venho AI system uses containerd [nerdctl](https://github.com/containerd/nerdctl) as its container management tool,
+and starting with SailfishOS 5.0.0.68 additional ComposeD to wrap the common operations and updates.
+
+>[!IMPORTANT]
+> When ever you need to issue `nerdctl` commands you should first enter the
+> ComposeD managed environment with the `venhoadactl shell` command.
+>
+
 
 ## Find out what containers are running
 
-Venho AI system uses containerd [nerdctl](https://github.com/containerd/nerdctl) as its container management tool. To see what is running, use the following command:
+To see what service containers are running, use the following command:
 
-`nerdctl container ls`
+```shell
+nerdctl compose ps -a
+```
 
 ## See logs for each container
-
-Containers directly associated with the Venho app are usually found within the `venho.ai/venho-ada/` image location, although the application might use other containers running as well.
-At the time of writing this FAQs the known containers for Venho applications are:
-
-- gateway
-- opaque
-- keygen
-- quadstore
-- llm
-- pytorch-transformers
-- mailbox-provider
-- storage
-- processor
-- venho-ada-frontend-httpd-1
-- ollama
-- ipfs
-- redis
-- qdrant
 
 In order to see the logs nerdctl can be used running the following command:
 
 ```shell
-# Switch to root
-devel-su
-# Switch to venho-ada-env enviorment
-venho-ada-env
-
 # See logs for all containers:
 nerdctl compose logs -f
-# See logs for a specific container (e.g., processor):
+
+# To see logs for a specific service add the service name listed in the 
+# compose ps output, e.g., processor:
 nerdctl compose logs -f processor
 ```
 
 ## Start, Stop and restart the Service
 
-Venho Ada service is run by default at system start-up, in order to start stop and restart the service `systemctl` can be used as follows
+Venho Ada service is run by default at system start-up, in order to start stop and restart the service `venhoadactl` can be used as follows
 
 ```shell
-systemctl stop venho-ada.service
-systemctl start venho-ada.service
-systemctl restart venho-ada.service
+venhoadactl stop
+venhoadactl start
+venhoadactl restart
 ```
 
-## Manually update the venho ada software version running or change version
+## Get ComposeD logs on venhoadactl command failures
 
-The version of the software installed is stored within the RELEASE_TAG variable in /var/lib/venho-ada/local.env file.
-The user can change this variable if required using the following procedure (before updating it is recommended to stop the service running and stop the containers) :
+The `venhoadactl` commands like start, stop, and update call the ComposeD service and may occasionally fail.
+To get more information on these failures you can check the composed log with
 
 ```shell
-# Stop Service and containers
-devel-su
-venho-ada-env
-systemctl stop venho-ada.service
-nerdctl compose down
-# exit the venho-ada-env environment
-exit
-# Update version tag
-echo "RELEASE_TAG=0.4.2" > /var/lib/venho-ada/local.env
-# Update containers and start
-venho-ada-env
-nerdctl compose pull
-systemctl start venho-ada.service
+journalctl -u composed@venhoada
 ```
+
 
 ## Clean unused images
 
@@ -87,24 +69,19 @@ nerdctl system prune -af
 Followed by:
 
 ```shell
-compose create --force-recreate
+nerdctl compose create --force-recreate
 ```
 
 ## Clean Userdata and Accounts
 
 If you have some issues, especially when updates break during the alpha release schedule. These commands remove your user and associated data from the system allowing you to recreate a fresh new user.
-Take care not to remove the `ollama` or `pytorch-transformers` directories, as these contain LLM models which are quite big and you probably don't want to reinstall them.
+Take care not to remove the `ollama`, `pytorch-transformers` or `rknn-llm` directories, as these contain LLM models which are quite big and you probably don't want to reinstall them.
 
 ```shell
-devel-su
-systemctl stop venho-ada.service
-venho-ada-env
-nerdctl compose stop
-rm -rf /home/venho-data/qdrant
-rm -rf /home/venho-data/quadstore
-rm -rf /home/venho-data/valkey
-nerdctl compose create --force-recreate
-reboot
+venhoadactl shell nerdctl compose down
+cd /home/venho-data
+rm -rf ipfs qdrant quadstore valkey
+venhoadactl restart --force
 ```
 
 ## Resetting Your Mind2 Device Using Recovery Mode
@@ -154,35 +131,27 @@ telnet 10.42.66.66
 You can independently add models to be used through the Venho interface such as the conversation user experience. When adding models, keep in mind the hardware requirements of the models to ensure you are choosing ones which will best compliment your Mind2:
 
 ```shell
-devel-su
-venho-ada-env
 nerdctl exec -it ollama ollama pull some-model # For example, gemma2:2b
 nerdctl compose restart llm-router
-exit
 ```
 
 Then wait a few minutes and refresh your webpage, the model should now be available in the model picker in the Conversation experience.
 
 ## Re-Install Venho Platform from scratch
 
-The below instructions completely wipe all your data (in Venho) as well as re-install the entire Venho platform to factory image state.
+The below instructions completely wipe all your data (in Venho) as well as download the container images and recreate the containers.
 
 ```shell
-devel-su
-systemctl stop venho-ada.service
-venho-ada-env
-nerdctl compose down
+venhoadactl shell nerdctl compose down
 nerdctl system prune -af
-rm -rf /home/venho-data
-rm /var/lib/venho-ada/preload-done
-reboot
+cd /home/venho-data
+rm -rf frontend-httpd ipfs qdrant quadstore secrets valkey
+venhoadactl update --force
+venhoadactl start
 ```
 
-Once device has restarted and you have regained SSH access, you may monitor install status with:
+Downloading the the images will take a while.
 
-```shell
-journalctl logs -f
-```
 
 ## Turn Mind2 LEDs off
 
@@ -215,58 +184,16 @@ Turn On
 mcetool -l
 ```
 
-## How to Fix the KEYGEN_FAIL error when trying to login
-
-The Services were not properlly started. So you will have to start them manually again.
-
-Switch to root
-
-```shell
-devel-su
-```
-
-Enter the venho-ada-env enviorment
-
-```shell
-venho-ada-env
-```
-
-Stop the venho-ada service and the containers
-
-```shell
-systemctl stop venho-ada.service
-nerdctl compose down
-```
-
-Start the venho-ada service again
-
-```shell
-systemctl start venho-ada.service
-```
-
-You will have to wait untill all containers are running again. You can check if all are running again via:
-
-```shell
-nerdctl compose ps -a
-```
-
-After you are done you can exit the venho-ada-env enviorment again
-
-```shell
-exit
-```
 ## How to Fix Venho.ai Container Registry Auth Issue
-You run into an authentication issue pulling new container images from the `Venho.ai` (registry.jolla.com) registry. 
-An error message shown on the root shell looks e.g. like the following (pulling release tag 0.3.0):
+You run into an authentication issue pulling new container images from the `Venho.ai` (registry.jolla.com) registry.
 
-```shell
-(venho-ada)[root@Mind2 defaultuser]# nerdctl compose pull
-INFO[0000] Pulling image venho.ai/venho-ada/frontend-httpd:0.3.0
-venho.ai/venho-ada/frontend-httpd:0.3.0: resolving      |--------------------------------------|
-venho.ai/venho-ada/frontend-httpd:0.3.0: resolving      |--------------------------------------|
-elapsed: 25.3s                           total:   0.0 B (0.0 B/s)
-FATA[0025] failed to resolve reference "venho.ai/venho-ada/frontend-httpd:0.3.0": pull access denied, repository does not exist or may require authorization: authorization failed: no basic auth credentials
-FATA[0025] error while pulling image venho.ai/venho-ada/frontend-httpd:0.3.0: exit status 1
+An error message in `journalctl -u composed@venhoada` looks like the following:
+
+```
+Jun 13 14:35:12 Mind2 composed[17572]: time="2025-06-13T14:35:12+03:00" level=info msg="fetch failed" error="pull access denied, repository does not exist or may require authorization: authorization failed: no basic auth credentials" host=registry.jolla.com
+Jun 13 14:35:12 Mind2 composed[17572]: time="2025-06-13T14:35:12+03:00" level=fatal msg="failed to resolve reference \"venho.ai/venho-ada/storage:0.4.6\": pull access denied, repository does not exist or may require authorization: authorization failed: no basic auth credentials"
+Jun 13 14:35:12 Mind2 composed[17572]: time="2025-06-13T14:35:12+03:00" level=fatal msg="error while pulling image venho.ai/venho-ada/storage:0.4.6: exit status 1"
+Jun 13 14:35:12 Mind2 composed[17572]: INFO: Update [100%]: Failed - Command '('/usr/bin/nerdctl', 'compose', 'pull', '-q')' returned non-zero exit status 1.
 ```
 
 You can check your stored registry credentials using the `docker-credential-ssu` CLI that will query the SailfishOS keystore:
